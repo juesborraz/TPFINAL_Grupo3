@@ -1,7 +1,7 @@
 # TPFINAL_Grupo3
 Sistema automático de dosificación de fluido con sensor de distancia
 
-1. Descripción General del Proyecto
+1. DESCRIPCIÓN GENERAL DEL PROYECTO
 El proyecto consiste en una maqueta funcional de un sistema automático de dosificación y control de llenado de un recipiente. El sistema mide el nivel de líquido mediante un sensor de distancia infrarrojo Sharp, cuya salida analógica es leída por el ADC del PIC16F887. A partir de esa medición, el microcontrolador determina el porcentaje aproximado de llenado y lo muestra en un display de 7 segmentos multiplexado.
 Como actuador se utiliza una mini bomba de agua controlada mediante un MOSFET. Además, se incorpora un botón de emergencia mediante interrupción externa, que permite detener el funcionamiento del sistema, apagar la bomba y activar una indicación visual de falla mediante un LED y el mensaje “FAIL” en el display.
 
@@ -39,8 +39,8 @@ Como mejora adicional, podría utilizarse una bomba peristáltica para obtener u
 
 5. Arquitectura del Sistema: Hardware y Software
 4.1 Hardware & Interconexión
+<img width="1280" height="960" alt="image" src="https://github.com/user-attachments/assets/0a332185-7f6d-4fd3-a8ff-c1ce797d5b31" />
 
----
 
 
 4.2 Descripción del circuito y consideraciones de diseño
