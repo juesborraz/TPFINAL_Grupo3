@@ -122,6 +122,10 @@ Una vez verificados el display y la medición analógica, se implementó la lóg
 Etapa 4 – Sistema completo
 Finalmente se integró el botón de emergencia mediante RB0/INT, el LED de alarma en RB4 y el control de la bomba mediante RB7 y un MOSFET. En esta etapa se verificó que el sistema pudiera medir, visualizar, activar/desactivar el actuador y responder ante una emergencia.
 
+7.1 DIAGRAMA DE FLUJO
+<img width="1491" height="1055" alt="image" src="https://github.com/user-attachments/assets/4b045d77-b3f4-461d-81b8-99388e5499cf" />
+
+
 8. ENSAYOS, PRUEBAS Y RESULTADOS
    
 Pruebas funcionales realizadas: 
