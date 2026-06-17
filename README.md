@@ -40,6 +40,7 @@ Como mejora adicional, podría utilizarse una bomba peristáltica para obtener u
 5. Arquitectura del Sistema: Hardware y Software
 4.1 Hardware & Interconexión
 <img width="1280" height="960" alt="image" src="https://github.com/user-attachments/assets/0a332185-7f6d-4fd3-a8ff-c1ce797d5b31" />
+![Uploading image.png…]()
 
 
 
