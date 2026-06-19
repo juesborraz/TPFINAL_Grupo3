@@ -39,9 +39,9 @@ Como mejora adicional, podría utilizarse una bomba peristáltica para obtener u
 
 3. ARQUITECTURA DEL SISTEMA
 3.1. Hardware & Interconexión
-<img width="1280" height="960" alt="image" src="https://github.com/user-attachments/assets/0a332185-7f6d-4fd3-a8ff-c1ce797d5b31" />
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/cf8b481b-4e7f-4187-90b0-176c40959611" />
+<img width="900" height="1600" alt="image" src="https://github.com/user-attachments/assets/addf9020-cd98-4f81-9a35-5a3cd5622c3b" />
 
+<img width="900" height="1600" alt="image" src="https://github.com/user-attachments/assets/e1ee9cfd-50a4-4b41-b68d-5dc17643df8d" />
 
 
 4. DESCRIPCION DEL CIRCUITO
