@@ -71,9 +71,6 @@ MCLR: Reset externo
 El firmware se organiza en un lazo principal y una rutina de interrupción. En el lazo principal se realiza la lectura del ADC, el procesamiento de la medición del sensor y la actualización del valor mostrado en el display. La lectura analógica permite estimar el nivel del recipiente.
 Timer0 se utiliza como base de tiempo para el refresco del display multiplexado. En cada interrupción de Timer0 se habilita un dígito del display y se cargan los segmentos correspondientes. Esta técnica permite visualizar varios dígitos usando menos pines del microcontrolador.
 La interrupción externa RB0/INT se utiliza para el botón de emergencia. Cuando se detecta una pulsación válida, el sistema conmuta el estado de emergencia. En emergencia, la bomba se apaga, el LED conectado a RB4 se enciende y el display muestra “FAIL”. Al presionar nuevamente el botón, el sistema sale de emergencia y retorna al funcionamiento normal.
-<img width="1600" height="1076" alt="image" src="https://github.com/user-attachments/assets/c4d47a47-d7a2-448d-91d9-48a2d14122ea" />
-
-
 
 7. ESPECIFICACIONES ELÉCTRICAS
 6.1 Parámetros de alimentación y consumo
