@@ -3,7 +3,7 @@ Sistema automático de dosificación de fluido con sensor de distancia
 
 1. DESCRIPCIÓN GENERAL DEL PROYECTO
 El proyecto consiste en una maqueta funcional de un sistema automático de dosificación y control de llenado de un recipiente. El sistema mide el nivel de líquido mediante un sensor de distancia infrarrojo Sharp, cuya salida analógica es leída por el ADC del PIC16F887. A partir de esa medición, el microcontrolador determina el porcentaje aproximado de llenado y lo muestra en un display de 7 segmentos multiplexado.
-Como actuador se utiliza una mini bomba de agua controlada mediante un MOSFET. Además, se incorpora un botón de emergencia mediante interrupción externa, que permite detener el funcionamiento del sistema, apagar la bomba y activar una indicación visual de falla mediante un LED y el mensaje “FAIL” en el display.
+Como actuador se utiliza una mini bomba de agua controlada mediante un relé. Además, se incorpora un botón de emergencia mediante interrupción externa, que permite detener el funcionamiento del sistema, apagar la bomba y activar una indicación visual de falla mediante un LED y el mensaje “FAIL” en el display.
 
 2. ALCANCES DEL PROYECTO
 El sistema SÍ es capaz de:
@@ -12,7 +12,7 @@ Leer la señal del sensor mediante el ADC interno del PIC16F887.
 Interpretar la distancia medida como un nivel aproximado de llenado del recipiente.
 Mostrar el estado del sistema en un display de 7 segmentos multiplexado.
 Mostrar una escala aproximada de porcentaje de llenado.
-Controlar una mini bomba de agua mediante una salida digital conectada al gate de un MOSFET.
+Controlar una mini bomba de agua mediante una salida digital 
 Activar un estado de emergencia mediante un pulsador conectado a RB0/INT.
 Mantener el estado de emergencia hasta una nueva pulsación del botón.
 Apagar la bomba ante una emergencia.
@@ -47,15 +47,16 @@ Como mejora adicional, podría utilizarse una bomba peristáltica para obtener u
 4. DESCRIPCION DEL CIRCUITO
 El circuito utiliza un microcontrolador PIC16F887 como unidad central de procesamiento. El sensor Sharp entrega una señal analógica que depende de la distancia medida. Esta señal se conecta a la entrada AN8/RB2 del PIC16F887, donde es convertida por el ADC interno.
 El display de 7 segmentos es de ánodo común y se controla de forma multiplexada. Los segmentos se conectan al PORTD, mientras que la habilitación de cada dígito se realiza mediante RA0, RA1, RA2 y RA3. Como el display es de ánodo común, los segmentos se activan con nivel lógico bajo.
-La mini bomba de agua se controla mediante el pin RB7, conectado al gate de un MOSFET. El MOSFET actúa como una llave electrónica, permitiendo manejar la corriente de la bomba sin exigir corriente directamente al pin del PIC. Para proteger el circuito frente a los picos generados por la carga inductiva de la bomba, se debe colocar un diodo en contrafase en paralelo con la bomba. El cátodo del diodo se conecta al positivo de alimentación de la bomba y el ánodo al lado del MOSFET.
+La mini bomba de agua se controla mediante el pin RB7, conectado al gate de un MOSFET. El MOSFET actúa como una llave electrónica, permitiendo manejar la corriente de la bomba sin exigir corriente directamente al pin del PIC. 
 El botón de emergencia se conecta a RB0/INT. Al presionarlo, el sistema conmuta el estado de emergencia: detiene la bomba, enciende el LED de alarma conectado a RB4 y muestra “FAIL” en el display. Al volver a presionarlo, el sistema sale del estado de emergencia.
-<img width="958" height="462" alt="image" src="https://github.com/user-attachments/assets/219b51b1-58ce-472d-be92-81e3bfb6c52b" />
+
+<img width="1600" height="592" alt="image" src="https://github.com/user-attachments/assets/4db2baca-ed95-4c6c-b503-cb5b45ef68d5" />
 
 4.1 Asignación de pines
 RB0 / INT: Botón de emergencia
 RB2 / AN8: Entrada analógica del sensor Sharp
 RB4: LED amarillo de alarma
-RB7: Control de bomba mediante MOSFET
+RB7: Control de bomba mediante relé
 PORTD: Segmentos del display de 7 segmentos
 RA0: Habilitación display 1
 RA1: Habilitación display 2
@@ -70,7 +71,8 @@ MCLR: Reset externo
 El firmware se organiza en un lazo principal y una rutina de interrupción. En el lazo principal se realiza la lectura del ADC, el procesamiento de la medición del sensor y la actualización del valor mostrado en el display. La lectura analógica permite estimar el nivel del recipiente.
 Timer0 se utiliza como base de tiempo para el refresco del display multiplexado. En cada interrupción de Timer0 se habilita un dígito del display y se cargan los segmentos correspondientes. Esta técnica permite visualizar varios dígitos usando menos pines del microcontrolador.
 La interrupción externa RB0/INT se utiliza para el botón de emergencia. Cuando se detecta una pulsación válida, el sistema conmuta el estado de emergencia. En emergencia, la bomba se apaga, el LED conectado a RB4 se enciende y el display muestra “FAIL”. Al presionar nuevamente el botón, el sistema sale de emergencia y retorna al funcionamiento normal.
-<img width="1491" height="1055" alt="image" src="https://github.com/user-attachments/assets/b4a962f6-0511-4fc0-b8ad-ce47b8c2d499" />
+<img width="1600" height="1076" alt="image" src="https://github.com/user-attachments/assets/c4d47a47-d7a2-448d-91d9-48a2d14122ea" />
+
 
 
 7. ESPECIFICACIONES ELÉCTRICAS
@@ -87,7 +89,7 @@ IDE: MPLAB X IDE
 Simulación: Proteus
 Lenguaje: Assembler para PIC16F887.
 Ensamblador: MPASM.
-Microcontrolador principal: PIC16F887.
+Microcontrolador: PIC16F887.
 
 Bits de configuración:
 Oscilador: XT_OSC, utilizando cristal externo.
@@ -101,11 +103,12 @@ Periféricos internos utilizados:
 ADC: lectura de la señal analógica del sensor Sharp en AN8/RB2.
 Timer0: refresco del display multiplexado.
 Interrupción externa RB0/INT: botón de emergencia.
+
 Puertos digitales:
 PORTD para segmentos del display.
 PORTA para habilitación de displays.
 RB4 para LED de alarma.
-RB7 para control de bomba mediante MOSFET.
+RB7 para control de bomba mediante relé.
 
 Gestión de interrupciones:
 El PIC16F887 cuenta con un único vector de interrupción, por lo que la prioridad se gestiona por software dentro de la rutina ISR. Dentro de la ISR se evalúan las banderas de interrupción para identificar el origen del evento.
@@ -123,10 +126,11 @@ Etapa 3 – Integración lógica
 Una vez verificados el display y la medición analógica, se implementó la lógica de interpretación del sensor. Según la lectura del ADC, el sistema actualiza el valor mostrado en el display. También se incorporó la lógica de estado normal y estado de falla.
 
 Etapa 4 – Sistema completo
-Finalmente se integró el botón de emergencia mediante RB0/INT, el LED de alarma en RB4 y el control de la bomba mediante RB7 y un MOSFET. En esta etapa se verificó que el sistema pudiera medir, visualizar, activar/desactivar el actuador y responder ante una emergencia.
+Finalmente se integró el botón de emergencia mediante RB0/INT, el LED de alarma en RB4 y el control de la bomba mediante RB7 y un relé. En esta etapa se verificó que el sistema pudiera medir, visualizar, activar/desactivar el actuador y responder ante una emergencia.
 
 7.1 DIAGRAMA DE FLUJO
-<img width="1491" height="1055" alt="image" src="https://github.com/user-attachments/assets/4b045d77-b3f4-461d-81b8-99388e5499cf" />
+<img width="1600" height="1076" alt="image" src="https://github.com/user-attachments/assets/af1a85c5-61ed-4c96-9c41-a45c9415a35a" />
+
 
 
 8. ENSAYOS, PRUEBAS Y RESULTADOS
@@ -151,8 +155,7 @@ Prueba del botón de emergencia
 Se ensayó el pulsador conectado a RB0/INT. Al presionar el botón, el sistema debe entrar en estado de emergencia, mostrar “FAIL” en el display, apagar la bomba conectada a RB7 y encender el LED de alarma conectado a RB4. Mientras el pulsador esté presionado, la bomba está frenada y el led y display muestran la señal de alarma. CUando se suelta, el sistema vuelve a su estado normal. 
 
 Prueba del actuador
-Se verificó la salida digital RB7 que controla el MOSFET de la bomba. En estado normal, la bomba queda habilitada. En estado de emergencia, la salida se deshabilita para detener la bomba.
-Además, se colocó un diodo de protección en paralelo con la bomba para evitar picos de tensión.
+Se verificó la salida digital RB7 que controla el relé de la bomba. En estado normal, la bomba queda habilitada. En estado de emergencia, la salida se deshabilita para detener la bomba.
 
 
 9. CONCLUSIÓN
