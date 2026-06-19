@@ -49,6 +49,7 @@ El circuito utiliza un microcontrolador PIC16F887 como unidad central de procesa
 El display de 7 segmentos es de ánodo común y se controla de forma multiplexada. Los segmentos se conectan al PORTD, mientras que la habilitación de cada dígito se realiza mediante RA0, RA1, RA2 y RA3. Como el display es de ánodo común, los segmentos se activan con nivel lógico bajo.
 La mini bomba de agua se controla mediante el pin RB7, conectado al gate de un MOSFET. El MOSFET actúa como una llave electrónica, permitiendo manejar la corriente de la bomba sin exigir corriente directamente al pin del PIC. Para proteger el circuito frente a los picos generados por la carga inductiva de la bomba, se debe colocar un diodo en contrafase en paralelo con la bomba. El cátodo del diodo se conecta al positivo de alimentación de la bomba y el ánodo al lado del MOSFET.
 El botón de emergencia se conecta a RB0/INT. Al presionarlo, el sistema conmuta el estado de emergencia: detiene la bomba, enciende el LED de alarma conectado a RB4 y muestra “FAIL” en el display. Al volver a presionarlo, el sistema sale del estado de emergencia.
+<img width="958" height="462" alt="image" src="https://github.com/user-attachments/assets/219b51b1-58ce-472d-be92-81e3bfb6c52b" />
 
 4.1 Asignación de pines
 RB0 / INT: Botón de emergencia
