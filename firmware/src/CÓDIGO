@@ -323,23 +323,23 @@ CHECK_UART
     RETURN
 
     BANKSEL RCSTA
-    BTFSC   RCSTA, OERR
-    GOTO    UART_OVERRUN
+    BTFSC   RCSTA, OERR    ;error de overrun
+    GOTO    UART_OVERRUN   ;se apaga y prende la uart p salvar ese error
 
     BANKSEL RCREG
-    MOVF    RCREG, W
+    MOVF    RCREG, W       ;lee el dato recibido
     BANKSEL RX_CHAR
-    MOVWF   RX_CHAR
+    MOVWF   RX_CHAR        ;el dato recibido queda en rx_char
 
     MOVF    RX_CHAR, W
-    XORLW   0x0D
+    XORLW   0x0D           
     BTFSC   STATUS, Z
-    GOTO    UART_ENTER
+    GOTO    UART_ENTER     
 
     MOVF    RX_CHAR, W
     XORLW   0x0A
     BTFSC   STATUS, Z
-    GOTO    UART_ENTER
+    GOTO    UART_ENTER     ;si se mando enter es porque termino el numero
 
     MOVLW   '0'
     SUBWF   RX_CHAR, W
@@ -352,14 +352,15 @@ CHECK_UART
     SUBWF   RX_DIG, W
     BTFSC   STATUS, C
     RETURN
-
+    
+    ;se arma el numero primero con decenas luego unidades mediante multiplicacion con RLF
     MOVF    UART_NUM, W
     MOVWF   TEMP
     BCF     STATUS, C
     RLF     TEMP, F
 
     BCF     STATUS, C
-    RLF     UART_NUM, F
+    RLF     UART_NUM, F   
     RLF     UART_NUM, F
     RLF     UART_NUM, F
 
@@ -392,7 +393,7 @@ UART_SET_100
 UART_FIN_ENTER
     CLRF    UART_NUM
     CALL    SETPOINT_TO_ADC
-    RETURN          ;esto hace falta??? si viene con goto desde 386
+    RETURN          
     
 
 ; RECUPERACION DE ERROR UART
@@ -407,11 +408,12 @@ UART_OVERRUN
     ; Convierte el porcentaje que se quierw en valores de ADRESH (de la calibracion experimental que hicimos)
     
 SETPOINT_TO_ADC
+;para encontrar el adresh equivalente desde un % deseado
     MOVLW   d'100'
     SUBWF   SETPOINT, W
     BTFSC   STATUS, C
-    GOTO    SETADC_100    ;si necesita préstamo porque es mas chico que 100, el carry sse pone en 0 y se salta a la siguiente sin ejecutar la inmediata 
-
+    GOTO    SETADC_100    ;si setpoint es mayor o igual, C=1
+                          ;si es menor sigue buscando
     MOVLW   d'90'
     SUBWF   SETPOINT, W
     BTFSC   STATUS, C
@@ -529,19 +531,19 @@ SETADC_100
 
 
 ; CONTROL DE BOMBA
-; Compara el ADRESH con los umbrales del setpoint
-; en emergencia no modifica la salida 
+; Comparamos la lectura actual del sensor (Adresh) con los umbrales que provienen del setpoint (uart)
+    
 ACTUALIZA_BOMBA
     BANKSEL FAIL_FLAG
     BTFSC   FAIL_FLAG, 0
-    RETURN
+    RETURN                  ;si estoy en emergencia me voy
 
-    MOVF    SETPOINT, F
+    MOVF    SETPOINT, F     ;si el setpoint es 0 apaga la bomba
     BTFSC   STATUS, Z
     GOTO    BOMBA_OFF
 
     BANKSEL ADRESH
-    MOVF    ADRESH, W
+    MOVF    ADRESH, W        ;LECTURA DEL VALOR ANALOGICO la guarda a temp
     BANKSEL TEMP
     MOVWF   TEMP
 
@@ -558,7 +560,7 @@ ACTUALIZA_BOMBA
     RETURN
 
 
-; Salidas directas de control de bomba.
+; Salidas del control de bomba
 BOMBA_ON
     BANKSEL PORTB
     BSF     PORTB, 7
@@ -574,7 +576,7 @@ BOMBA_OFF
 MAIN:
     BANKSEL PORTB
     BTFSS   PORTB, 0
-    GOTO    BTN_PRESIONADO        ;se fija el boton
+    GOTO    BTN_PRESIONADO        
 
 
 ; LECTURA DEL BOTON DE EMERGENCIA
@@ -592,9 +594,9 @@ BTN_PRESIONADO
     MOVLW   d'3'
     SUBWF   BTN_COUNT, W
     BTFSC   STATUS, Z
-    GOTO    BTN_ACTIVA_FAIL
+    GOTO    BTN_ACTIVA_FAIL  ;se activa la emergencia solo cuando count=3
 
-    MOVLW   d'200'
+    MOVLW   d'200'           ;en 200 vueltas se resetea la emergencia y vuelve a funcionamiento normal 
     SUBWF   BTN_COUNT, W
     BTFSC   STATUS, Z
     GOTO    BTN_RESET_FAIL
@@ -636,9 +638,9 @@ BTN_RESET_FAIL
 ; En funcionamiento normal se lee UART, se inicia el ADC, se espera el resultado y se actualiza la bomba.
 SIGUE_NORMAL
 
-    CALL    CHECK_UART
+    CALL    CHECK_UART  ;primero se revisa la uart
 
-    BANKSEL TEMP
+    BANKSEL TEMP        ;espero
     MOVLW   d'50'
     MOVWF   TEMP
 
@@ -646,17 +648,17 @@ ESPERA
     DECFSZ  TEMP, F
     GOTO    ESPERA
 
-    BANKSEL ADCON0
+    BANKSEL ADCON0       ;se inicia la conversion go=1
     BSF     ADCON0, GO
 
 ESPERAR_ADC
     BTFSC   ADCON0, GO
     GOTO    ESPERAR_ADC
 
-    CALL    ACTUALIZA_BOMBA
+    CALL    ACTUALIZA_BOMBA   ;compara la lectura del sensor con los valores rango a partir de la uart
 
     BANKSEL ADRESH
-
+;a partir de aca se esta clasificando el valor en la subrutina que corresponda para mostrar en el display
     MOVLW   d'85'
     SUBWF   ADRESH, W
     BTFSC   STATUS, C
@@ -712,7 +714,7 @@ ESPERAR_ADC
 
 ; ACTUALIZACION DEL PORCENTAJE EN DISPLAY
 ; Segun el valor de ADRESH se cargan los codigos de segmentos para mostrar 0%, 10% hasta 100%
-    
+
 ES_LLENO
     BANKSEL DISPLAY1
     MOVLW   0xBF
